@@ -21,14 +21,14 @@ import app.orubus.exmera.camera.ExmeraCameraController
 /**
  * CameraX preview host for IMAGE / VIDEO / PORTRAIT / PANO modes.
  * Rebinds use cases when the mode changes or the user flips the camera.
+ * Tap-to-focus goes straight to the controller via the PreviewView metering factory.
  */
 @Composable
 fun CameraXPreviewHost(
     holder: ExmeraCameraControllerHolder,
     mode: CameraMode,
     modifier: Modifier,
-    flipToken: Int,
-    onTap: (Float, Float) -> Unit
+    flipToken: Int
 ) {
     val context = LocalContext.current
     val owner = LocalLifecycleOwner.current
@@ -39,7 +39,8 @@ fun CameraXPreviewHost(
         factory = { ctx -> PreviewView(ctx).also { view = it } },
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures { offset ->
-                onTap(offset.x / size.width.coerceAtLeast(1), offset.y / size.height.coerceAtLeast(1))
+                val v = view
+                if (v != null) controller.focusAt(v, offset.x, offset.y)
             }
         }
     )

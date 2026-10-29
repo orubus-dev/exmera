@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.orubus.exmera.camera.CameraMode
 import app.orubus.exmera.camera.ExmeraCameraController
+import app.orubus.exmera.camera.ProCamera2
 import androidx.camera.core.ImageCapture
 
 private val MODE_ORDER = listOf(CameraMode.PRO, CameraMode.VIDEO, CameraMode.IMAGE, CameraMode.PORTRAIT, CameraMode.PANO)
@@ -68,9 +69,7 @@ fun ExmeraApp(profile: String) {
         if (mode == CameraMode.PRO) {
             ProPreviewHost(pro, Modifier.fillMaxSize())
         } else {
-            CameraXPreviewHost(controller, mode, Modifier.fillMaxSize(), flipToken) { nx, ny ->
-                controller.get()?.focusAt(nx, ny)
-            }
+            CameraXPreviewHost(controller, mode, Modifier.fillMaxSize(), flipToken)
         }
 
         // top bar

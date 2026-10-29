@@ -193,11 +193,10 @@ class ExmeraCameraController(
         camera?.cameraControl?.setZoomRatio(ratio.coerceIn(1f, maxOf(1f, c.maxDigitalZoom)))
     }
 
-    fun focusAt(nx: Float, ny: Float) {
-        lastFocusX = nx; lastFocusY = ny
-        val w = analysis?.width ?: 640; val h = analysis?.height ?: 480
-        val factory = androidx.camera.core.SurfaceOrientedMeteringPointFactory(w.toFloat(), h.toFloat())
-        val point = factory.createPoint(nx * w, ny * h)
+    fun focusAt(view: PreviewView, vx: Float, vy: Float) {
+        lastFocusX = if (view.width > 0) vx / view.width else 0.5f
+        lastFocusY = if (view.height > 0) vy / view.height else 0.45f
+        val point = view.meteringPointFactory.createPoint(vx, vy)
         camera?.cameraControl?.startFocusAndMetering(
             FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF or FocusMeteringAction.FLAG_AE)
                 .disableAutoCancel().build()
@@ -220,7 +219,7 @@ class ExmeraCameraController(
         onDone: (Boolean, String) -> Unit
     ) {
         val ic = capture
-        if (ic == null || _busy.get()) {
+        if (ic == null || _busy.value) {
             onDone(false, "camera busy")
             return
         }

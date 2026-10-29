@@ -171,8 +171,8 @@ fun MonoIcon(kind: String, modifier: Modifier = Modifier, tint: Color = Mono.ink
         when (kind) {
             "packs" -> { // stacked squares
                 val s = w * 0.52f; val o = w * 0.14f
-                drawRoundRect(tint, Offset(o, o + h * 0.28f), androidx.compose.ui.geometry.Size(s, s), stroke)
-                drawRoundRect(tint, Offset(o + w * 0.16f, o), androidx.compose.ui.geometry.Size(s, s), stroke)
+                drawRoundRect(color = tint, topLeft = Offset(o, o + h * 0.28f), size = androidx.compose.ui.geometry.Size(s, s), style = stroke)
+                drawRoundRect(color = tint, topLeft = Offset(o + w * 0.16f, o), size = androidx.compose.ui.geometry.Size(s, s), style = stroke)
             }
             "privacy" -> { // shield
                 val path = Path().apply {
