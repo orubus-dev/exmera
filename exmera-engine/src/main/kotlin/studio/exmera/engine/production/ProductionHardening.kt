@@ -16,6 +16,6 @@ class CancellationToken{@Volatile private var cancelled=false;fun cancel(){cance
 class ProcessingCancelledException:RuntimeException("Processing cancelled")
 object IntegrityHash{fun sha256(bytes:ByteArray):String=MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)};fun verify(bytes:ByteArray,expected:String)=expected.length==64&&sha256(bytes).equals(expected,ignoreCase=true)}
 data class StorageQuota(val limitBytes:Long,val usedBytes:Long){init{require(limitBytes>=0&&usedBytes>=0)};val remainingBytes get()=(limitBytes-usedBytes).coerceAtLeast(0);fun canAllocate(bytes:Long)=bytes>=0&&bytes<=remainingBytes}
-data class ReleaseGate(val name:String,val passed:Boolean,val detail:String)
+data class ReleaseGate(val name:String,val passed:Boolean,val detail:String="",val blocking:Boolean=true)
 data class ReleaseReport(val version:String,val gates:List<ReleaseGate>){val passed get()=gates.all{it.passed};fun requirePassed(){check(passed){"Release gates failed: ${gates.filterNot{it.passed}.joinToString{it.name}}"}}}
 object ReleaseGateEvaluator{fun evaluate(version:String,gates:List<ReleaseGate>)=ReleaseReport(version,gates)}

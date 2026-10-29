@@ -14,7 +14,8 @@ class DeviceProfile private constructor(
 
     companion object {
         fun detect(context: Context): DeviceProfile {
-            val memory = context.getSystemService(ActivityManager::class.java).memoryInfo
+            val memory = ActivityManager.MemoryInfo()
+            context.getSystemService(ActivityManager::class.java).getMemoryInfo(memory)
             val ram = memory.totalMem / (1024 * 1024)
             val cores = Runtime.getRuntime().availableProcessors()
             val accelerator = Build.VERSION.SDK_INT >= 29

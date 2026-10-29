@@ -94,9 +94,9 @@ class ExmChunkedTest {
         withTempContainer(corrupted) { reader ->
             // header parses fine (indexes are intact) — the digest catches the data damage
             assertEquals(1, reader.chunkCount)
-            val e = assertFailsWith<IllegalStateException> { reader.readChunk(0) }
+            val e = assertFailsWith<IllegalArgumentException> { reader.readChunk(0) }
             assertTrue(e.message!!.contains("integrity"))
-            val e2 = assertFailsWith<IllegalStateException> { reader.assemble() }
+            val e2 = assertFailsWith<IllegalArgumentException> { reader.assemble() }
             assertTrue(e2.message!!.contains("integrity"))
         }
     }

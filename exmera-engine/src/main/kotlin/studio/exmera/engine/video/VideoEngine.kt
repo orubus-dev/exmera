@@ -37,7 +37,7 @@ class TemporalFrameBuffer<T:AutoCloseable>(private val capacity:Int):AutoCloseab
     init{require(capacity in 2..32)}
     private val frames=ArrayDeque<T>(capacity); private var closed=false
     @Synchronized fun offer(value:T):Boolean{if(closed){value.close();return false};if(frames.size==capacity)frames.removeFirst().close();frames.addLast(value);return true}
-    @Synchronized fun snapshot():List<T>=frames.toList()
+    @Synchronized fun snapshot(): List<T> = frames.toList()
     @Synchronized fun clear(){while(frames.isNotEmpty())frames.removeFirst().close()}
     @Synchronized override fun close(){if(!closed){closed=true;clear()}}
 }

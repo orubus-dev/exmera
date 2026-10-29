@@ -25,10 +25,10 @@ class ExmBenchmarkTest {
         assertEquals(2, reports.size)
         for (r in reports) {
             assertEquals(payload.size.toLong(), r.originalBytes)
-            assertTrue(r.storedBytes > 0 && r.storedBytes < r.originalBytes * 2) { "stored size implausible: $r" }
-            assertTrue(r.ratio > 0.0) { "ratio must be positive: $r" }
-            assertTrue(r.chunks >= 1) { "must have chunks: $r" }
-            assertTrue(r.integrity) { "integrity must hold: $r" }
+            assertTrue(r.storedBytes > 0 && r.storedBytes < r.originalBytes * 2, "stored size implausible: $r")
+            assertTrue(r.ratio > 0.0, "ratio must be positive: $r")
+            assertTrue(r.chunks >= 1, "must have chunks: $r")
+            assertTrue(r.integrity, "integrity must hold: $r")
             assertTrue(r.writeMs >= 0.0 && r.headerMs >= 0.0 && r.assembleMs >= 0.0)
         }
         assertEquals(5, reports[0].chunks) // ceil(300000/65536) = 5

@@ -52,7 +52,7 @@ object TranslationAligner {
         val y1 = reference.height - marginY - r
         if (x1 <= x0 || y1 <= y0) return MotionVector(0f, 0f, 0f)
 
-        var best = -Float.MAX_VALUE
+        var best = -Double.MAX_VALUE
         var bestDx = 0
         var bestDy = 0
         for (dy in -r..r step s) for (dx in -r..r step s) {

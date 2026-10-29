@@ -48,7 +48,11 @@ object ExmBenchmark {
         quantization: ExmFormat.Quantization = ExmFormat.Quantization.FP16
     ): List<Report> = configs.map { runOne(payload, it, quantization) }
 
-    fun runOne(payload: ByteArray, config: Config, quantization: ExmFormat.Quantization): Report {
+    fun runOne(
+        payload: ByteArray,
+        config: Config,
+        quantization: ExmFormat.Quantization = ExmFormat.Quantization.FP16
+    ): Report {
         require(payload.size.toLong() <= ExmFormat.MAX_PAYLOAD_BYTES)
         val manifest = ExmFormat.Manifest(
             id = "bench-model",
