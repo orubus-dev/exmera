@@ -8,6 +8,6 @@ android { namespace = "studio.exmera.exm"; compileSdk = 35
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-}}
+}
 
 dependencies { implementation("androidx.core:core-ktx:1.15.0") }
