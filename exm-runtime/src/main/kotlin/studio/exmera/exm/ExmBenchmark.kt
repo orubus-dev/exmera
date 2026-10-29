@@ -64,7 +64,7 @@ object ExmBenchmark {
         val container = File.createTempFile("exm-bench", ".exm")
         container.deleteOnExit()
         try {
-            val writeMs = timedMs {
+            val (writeMs, _) = timedMs {
                 val bytes = ByteArrayOutputStream()
                     .also { ExmChunked.write(it, manifest, config.tensors, payload, config.chunkBytes) }
                     .toByteArray()

@@ -211,7 +211,7 @@ object ExmChunked {
             internal fun create(channel: SeekableByteChannel): Reader {
                 channel.position(0)
                 val stream = ChunkChannelStream(channel, channel.size())
-                val header = readHeader(stream)
+                val header = readHeader(DataInputStream(stream))
                 return Reader(channel, header, stream.consumed())
             }
         }
