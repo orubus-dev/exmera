@@ -1,4 +1,4 @@
-package studio.exmera.app.camera
+package app.orubus.exmera.camera
 
 import android.content.ContentValues
 import android.content.Context

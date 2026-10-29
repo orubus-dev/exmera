@@ -1,4 +1,4 @@
-package studio.exmera.app
+package app.orubus.exmera
 
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
-import studio.exmera.app.camera.ExmeraCameraController
-import studio.exmera.app.camera.MultiFrameCaptureEngine
+import app.orubus.exmera.camera.ExmeraCameraController
+import app.orubus.exmera.camera.MultiFrameCaptureEngine
 
 @Composable
 fun CameraPreview(

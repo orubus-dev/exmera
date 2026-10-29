@@ -1,4 +1,4 @@
-package studio.exmera.app
+package app.orubus.exmera
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import studio.exmera.app.camera.ExmeraCameraController
-import studio.exmera.app.camera.MultiFrameCaptureEngine
-import studio.exmera.app.camera.RecordingState
+import app.orubus.exmera.camera.ExmeraCameraController
+import app.orubus.exmera.camera.MultiFrameCaptureEngine
+import app.orubus.exmera.camera.RecordingState
 
 @Composable
 fun ExmeraApp(profile: String) {

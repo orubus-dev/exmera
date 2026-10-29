@@ -1,0 +1,15 @@
+<!-- exmera mark: concentric lens rings + shutter ticks, monochrome -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:scaleX="0.6" android:scaleY="0.6" android:pivotX="54" android:pivotY="54">
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="3.2" android:fillColor="#00000000"
+            android:pathData="M54,14 A40,40 0 1,1 54,94 A40,40 0 1,1 54,14 Z" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="2.4" android:fillColor="#00000000"
+            android:pathData="M54,26 A28,28 0 1,1 54,82 A28,28 0 1,1 54,26 Z" />
+        <path android:fillColor="#FFFFFF"
+            android:pathData="M54,44 A10,10 0 1,1 54,64 A10,10 0 1,1 54,44 Z" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="3.2" android:strokeLineCap="round" android:fillColor="#00000000"
+            android:pathData="M54,14 L54,26 M89.8,44 L78.6,47.5 M76.3,86.3 L68.4,77 M31.7,86.3 L39.6,77 M18.2,44 L29.4,47.5" />
+    </group>
+</vector>

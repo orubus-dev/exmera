@@ -1,4 +1,4 @@
-package studio.exmera.app
+package app.orubus.exmera
 
 import android.Manifest
 import android.os.Bundle

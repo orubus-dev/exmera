@@ -1,4 +1,4 @@
-package studio.exmera.app
+package app.orubus.exmera
 
 /** Phase 29: shared accessibility semantics for camera/editor controls. */
 data class AccessibleAction(val label:String,val hint:String="",val enabled:Boolean=true)
