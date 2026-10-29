@@ -44,8 +44,13 @@ class TrackingEngineTest {
     @Test fun `class aware association avoids incompatible classes`() {
         val engine = TrackingEngine()
         val person = engine.update(listOf(detection(.1f, .1f, VisionObjectType.PERSON))).single()
-        val objectTrack = engine.update(listOf(detection(.1f, .1f, VisionObjectType.OBJECT))).single()
+        // the OBJECT detection must not associate to the PERSON track: a second track appears
+        val snapshots = engine.update(listOf(detection(.1f, .1f, VisionObjectType.OBJECT)))
+        assertEquals(2, snapshots.size)
+        val objectTrack = snapshots.last()
         assertTrue(objectTrack.id != person.id)
+        assertEquals(VisionObjectType.OBJECT, objectTrack.type)
+        assertEquals(VisionObjectType.PERSON, snapshots.first().type)
     }
 
     @Test fun `coordinate transform maps points and bounds`() {

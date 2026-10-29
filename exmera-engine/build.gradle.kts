@@ -19,4 +19,5 @@ dependencies {
     implementation(project(":exm-runtime"))
     implementation("androidx.core:core-ktx:1.15.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation(kotlin("test"))
 }

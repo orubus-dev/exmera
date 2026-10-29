@@ -46,28 +46,41 @@ object TranslationAligner {
         val s = max(1, step)
         val marginX = max(2, reference.width / 10)
         val marginY = max(2, reference.height / 10)
-        val x0 = marginX + r
-        val x1 = reference.width - marginX - r
-        val y0 = marginY + r
-        val y1 = reference.height - marginY - r
-        if (x1 <= x0 || y1 <= y0) return MotionVector(0f, 0f, 0f)
+        // Sample the valid interior; shifted reads are bounds-checked per pixel so
+        // even tiny frames (where margin+radius would once have emptied the window)
+        // correlate over real data instead of returning a zero-confidence guess.
+        val x0 = min(marginX, reference.width / 2)
+        val x1 = max(x0 + 1, reference.width - marginX)
+        val y0 = min(marginY, reference.height / 2)
+        val y1 = max(y0 + 1, reference.height - marginY)
 
         var best = -Double.MAX_VALUE
         var bestDx = 0
         var bestDy = 0
+        val stepX = max(1, reference.width / 72)
+        val stepY = max(1, reference.height / 72)
         for (dy in -r..r step s) for (dx in -r..r step s) {
             var sumA = 0.0; var sumB = 0.0; var sumAA = 0.0; var sumBB = 0.0; var sumAB = 0.0
             var n = 0
-            for (y in y0 until y1 step max(1, reference.height / 72)) {
-                for (x in x0 until x1 step max(1, reference.width / 72)) {
+            for (y in y0 until y1 step stepY) {
+                for (x in x0 until x1 step stepX) {
+                    val cx = x + dx
+                    val cy = y + dy
+                    if (cx < 0 || cy < 0 || cx >= reference.width || cy >= reference.height) continue
                     val a = reference[x, y].toDouble()
-                    val b = candidate[x + dx, y + dy].toDouble()
+                    val b = candidate[cx, cy].toDouble()
                     sumA += a; sumB += b; sumAA += a * a; sumBB += b * b; sumAB += a * b; n++
                 }
             }
+            if (n == 0) continue
             val denom = sqrt(max(1e-9, (n * sumAA - sumA * sumA) * (n * sumBB - sumB * sumB)))
             val corr = (n * sumAB - sumA * sumB) / denom
-            if (corr > best) { best = corr; bestDx = dx; bestDy = dy }
+            // prefer the smallest motion among (near-)equal correlations —
+            // repetitive textures must not pull the alignment off zero
+            if (corr > best + 1e-9 ||
+                (corr > best - 1e-9 && abs(dx) + abs(dy) < abs(bestDx) + abs(bestDy))) {
+                best = corr; bestDx = dx; bestDy = dy
+            }
         }
         return MotionVector(bestDx.toFloat(), bestDy.toFloat(), ((best + 1.0) / 2.0).toFloat().coerceIn(0f, 1f))
     }

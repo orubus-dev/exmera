@@ -21,7 +21,7 @@ data class SuperResolutionConfig(
 ) {
     init {
         require(tileSize >= 32)
-        require(overlap >= 0 && overlap * 2 < tileSize)
+        require(overlap >= 0 && overlap * 2 <= tileSize)
         require(sharpen in 0f..1f)
     }
 }
