@@ -63,3 +63,35 @@ Supported target labels: FP32, FP16, INT8 and INT4. Actual quality/size/runtime 
 ## Streaming
 
 The runtime locates and decodes only the chunks required by an execution plan (`ExmChunked.Reader.readTensor`). It never assumes the complete model fits in RAM.
+
+## Graph tensor convention (`@graph`)
+
+ONNX ingestion (`tools/onnx_to_exm.py`) stores every initializer as a declared
+v3 tensor and serializes the network itself into one reserved bytes tensor:
+
+```text
+name    = "@graph"        (reserved namespace; initializer names starting with '@' are rejected)
+dtype   = "bytes"
+shape   = [len(json)]     (one dimension carrying the serialized byte length)
+payload = UTF-8 JSON, sorted keys, compact separators — deterministic
+```
+
+The graph document (`"format": "exm-graph", "version": 1`) is the execution
+planner's source of truth and carries:
+
+- `byteOrder: "little"` — all tensor bytes are little-endian
+- `source` — origin format (`onnx`), IR version, opsets, producer, source SHA-256
+- `inputs` / `outputs` — runtime I/O signatures (weights excluded)
+- `nodes` — every op with its attributes (primitive attrs only), inputs, outputs
+- `tensors` — per-initializer provenance: EXM dtype used, ONNX dtype, true
+  shape, byte length. Wide numerics (INT32/INT64/DOUBLE/…) are stored as
+  opaque little-endian bytes with the shape flattened to `[nbytes]`; the true
+  shape lives here
+- `emptyTensors` — zero-size initializers, recorded but not stored
+- `foldedConstants` — `Constant` nodes hoisted into named initializers
+- `opCoverage` — sorted set of op types (runtime capability checks)
+
+Scope limits, enforced as hard rejections: control flow (`If`/`Loop`/`Scan`),
+subgraph attributes, sparse initializers, external data, and non-numeric
+dtypes (bfloat16/float8). Quantization is *not* claimed by ingestion — the
+manifest label reflects the source weights.

@@ -31,4 +31,6 @@ runtime/         future execution backends
 
 ## Development status
 
-v0.1 establishes the Android multi-module foundation, hardware profile selection, consumer UI, and initial EXM format primitives. The next milestone is the real EXM compiler/reader and benchmark harness, followed by CameraX capture and multi-frame fusion.
+v0.1 establishes the Android multi-module foundation, hardware profile selection, consumer UI, and initial EXM format primitives.
+
+v0.2 adds the real model pipeline: EXM v3 chunked container with per-tensor streaming, the ONNX ingestion compiler (`tools/onnx_to_exm.py` — weights as streamed tensors, network serialized into the reserved `@graph` tensor), and the first model-pack benchmark on real neural networks, with a cross-language guarantee: the Kotlin runtime rebuilds Python-written containers byte-for-byte (locked in CI). Next milestones: true FP16/INT8 conversion passes, execution planner over `@graph`, CameraX capture and multi-frame fusion.

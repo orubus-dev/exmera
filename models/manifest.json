@@ -21,5 +21,37 @@
     {"id":"dinov2","name":"DINOv2","pack":"smart","task":"visual_embedding","source":"https://github.com/facebookresearch/dinov2","license":"REVIEW_REQUIRED","status":"REVIEW_REQUIRED","sourceFormat":"pytorch"},
     {"id":"insightface-weights","name":"InsightFace pretrained weights","pack":"smart","task":"face_recognition","source":"https://github.com/deepinsight/insightface","license":"COMMERCIAL_LICENSE_REQUIRED","status":"BLOCKED","sourceFormat":"onnx"},
     {"id":"ultralytics-yolo","name":"Ultralytics YOLO","pack":"core","task":"object_detection","source":"https://github.com/ultralytics/ultralytics","license":"AGPL-3.0/Enterprise","status":"BLOCKED","sourceFormat":"pytorch"}
+  ],
+  "pipelineArtifacts": [
+    {
+      "id": "pipeline/super-resolution-10",
+      "name": "Super Resolution (sub-pixel CNN 2016)",
+      "task": "super_resolution",
+      "source": "https://github.com/onnx/models/tree/main/validated/vision/super_resolution/sub_pixel_cnn_2016",
+      "license": "MIT (as published by the ONNX Model Zoo)",
+      "status": "PIPELINE_VALIDATION",
+      "sourceFormat": "onnx",
+      "onnxSha256": "85f36ff88cc504a24af5e0602148bc56a8aa09a58eca8c0da2756f3e8186035e",
+      "exmSha256": "c00c5249932b2479494df08e5a57e8012f74dc1af014c17c1c50cfd3ecc9b3b6",
+      "exmBytes": 222250,
+      "tensorCount": 11,
+      "chunkCount": 11,
+      "note": "First ingested EXM v3 container (tools/onnx_to_exm.py). Kotlin fixture copy: exm-runtime/src/test/resources/ingested/. Not a bundled pack model; redistribution requires the same license verification as every catalog entry."
+    },
+    {
+      "id": "pipeline/resnet50-v2",
+      "name": "ResNet-50 v2 (ImageNet classification)",
+      "task": "image_classification",
+      "source": "https://github.com/onnx/models/tree/main/validated/vision/classification/resnet",
+      "license": "Apache-2.0 (as published by the ONNX Model Zoo)",
+      "status": "PIPELINE_VALIDATION",
+      "sourceFormat": "onnx",
+      "onnxSha256": "79102261eb6e5fd7af5d27f41316293e388c5cb691e5d25bfb035c4f64fefe31",
+      "exmSha256": "6b8afd69bd44d662cab4502b4ea7dd792e7f4bcf735cb7d5e88b0e2338720f3f",
+      "exmBytes": 95119741,
+      "tensorCount": 261,
+      "chunkCount": 269,
+      "note": "102MB stress artifact for per-tensor chunking/streaming (not committed; reproducible from the zoo URL). Not a bundled pack model."
+    }
   ]
 }

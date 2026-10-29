@@ -59,9 +59,34 @@ The runtime verifies the stored payload before decompression and enforces a maxi
 
 `tools/exm_compiler.py` produces deterministic EXM v2 packages with DEFLATE compression and integrity metadata. It intentionally does not claim to perform neural-network quantization merely by changing a label. Graph rewriting and true quantization are separate compiler passes and must be implemented with a compatible model-conversion backend.
 
+`tools/onnx_to_exm.py` is the first real conversion pass: it ingests single-file
+ONNX graphs into chunked EXM v3 containers — every initializer becomes a
+per-tensor-chunked EXM tensor, the network itself is serialized into the
+reserved `@graph` tensor (see `EXM_FORMAT.md`), and the reader/writer is
+byte-compatible with the Kotlin runtime: Kotlin rebuilds Python-written
+containers byte-for-byte, and the contract is locked in CI
+(`ExmIngestedContainerTest` + the `exm-ingestion` workflow job). Constant
+nodes are folded, control flow / external data / sparse / bfloat16 inputs are
+rejected. Quantization and graph *rewriting* remain future passes — ingestion
+packages the source graph faithfully.
+
+## First real model-pack benchmark (2026-10-29)
+
+Two ONNX Model Zoo networks went through the full pipeline
+(ingest → package → header-only open → per-tensor streaming → integrity):
+
+- super-resolution-10 (MIT): 11 tensors / 11 chunks, 241,467 → 222,250 bytes
+- ResNet-50 v2 (Apache-2.0): 261 tensors / 269 chunks, 102,456,489 → 95,119,741 bytes
+
+Measured (see `models/artifacts/README.md`): fp32 weights deflate to only
+~0.92–0.93, chunk size changes stored size by <0.1% (it is a streaming
+granularity knob), header-only open stays ≤3 ms at 100 MB scale, and Kotlin
+writer rebuilds were byte-identical to the Python-written containers.
+Conclusion unchanged: real size/runtime wins require true FP16/INT8 passes.
+
 ## Remaining production tracks
 
-1. EXM graph importer/optimizer and true FP16/INT8 conversion.
+1. EXM graph importer — ONNX ingestion shipped (packaging-faithful); graph optimizer and true FP16/INT8 conversion remain.
 2. Android GPU/NPU execution backends.
 3. Model benchmark matrix and per-device model selection.
 4. Camera RAW/gyro/HDR-bracket/full-resolution fusion.

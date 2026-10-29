@@ -14,3 +14,9 @@ models/*.pt
 models/*.bin
 models/*.safetensors
 *.exm
+!exm-runtime/src/test/resources/ingested/*.exm
+# model artifacts: keep provenance docs + the committed validation source,
+# exclude multi-MB binaries (reproducible from the URLs in models/manifest.json)
+models/artifacts/*
+!models/artifacts/README.md
+!models/artifacts/super-resolution-10.onnx
