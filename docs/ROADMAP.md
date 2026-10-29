@@ -9,13 +9,13 @@
 - [x] Model pack manifest
 
 ## Milestone 1 — EXM laboratory
-- [ ] Canonical binary EXM encoder
-- [ ] EXM decoder and chunk index
+- [x] Canonical binary EXM encoder (ExmChunked v3, deterministic, per-tensor chunking)
+- [x] EXM decoder and chunk index (header-only open, per-chunk SHA-256, streaming readTensor)
 - [x] SHA-256 verification
 - [ ] ONNX ingestion
 - [ ] FP16/INT8 conversion adapters
-- [ ] Compression benchmark harness
-- [ ] RAM/latency/quality report
+- [x] Compression benchmark harness (ExmBenchmark: size, ratio, write/header/assemble latency, integrity)
+- [ ] RAM/latency/quality report (device-side; harness covers container-level timings)
 - [ ] Real-ESRGAN-General-x4v3 benchmark
 
 ## Milestone 2 — Camera engine

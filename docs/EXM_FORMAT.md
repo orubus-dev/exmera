@@ -1,4 +1,4 @@
-# EXM container v1
+# EXM container
 
 `.exm` is Exmera's proposed model container. It is a packaging/runtime format, not a new neural-network architecture.
 
@@ -11,23 +11,55 @@
 5. License provenance carried with every artifact.
 6. Forward-compatible versioning.
 
-## Planned layout
+## Implemented layouts
+
+### v2 — whole payload (legacy, still readable)
 
 ```text
-magic + version + flags
-manifest
-model graph
-tensor index
-chunk index
-compressed weight chunks
-license metadata
-sha-256 integrity data
+magic "EXM1" + version i32 (=2)
+manifest (id, version, name, quantization, backend bitset, compression,
+          sha-256 of stored payload, stored size, original size,
+          min RAM, min Android, license)
+payload (single blob, optionally DEFLATE-compressed)
 ```
+
+`ExmContainer` writes and reads this layout. Kept for compatibility.
+
+### v3 — chunked (canonical, `ExmChunked`)
+
+```text
+magic "EXM1" + version i32 (=3) + flags i32 (bit0 = chunked)
+manifest  (same field order as v2; compression must be NONE — v3 compresses per chunk)
+chunkSize i64 (max original bytes per chunk; last chunk of a tensor may be smaller)
+tensorCount i32; per tensor:
+    name str | dtype str | rank i32 + dims i32* |
+    quantization i32 (-1 = inherit manifest) | chunkStart i32 | chunkCount i32
+chunkCount i32; per chunk:
+    storedSize i64 | originalSize i64 | codec i32 | sha-256 (64 ASCII bytes)
+chunk payloads in index order
+```
+
+Contract:
+
+- **Chunks never straddle tensors.** Each tensor's byte range is chunked independently,
+  so the runtime can stream exactly one tensor without touching the others.
+- **Per-chunk integrity.** Every chunk carries the SHA-256 of its stored bytes; the
+  manifest carries the SHA-256 of the whole original payload. Corruption is localized,
+  not file-fatal.
+- **Header-only open.** `ExmChunked.open()` reads just the manifest and indexes — no
+  weight bytes — so an execution planner can decide what to load before any I/O.
+- **Deterministic encoding.** Identical manifest/tensors/payload/chunkSize produce
+  byte-identical containers.
+- **Empty payloads are valid** (a single empty chunk keeps `chunkCount >= 1`).
+
+Declared tensor dtypes: `fp32` (4 B), `fp16` (2 B), `int8` (1 B), `int4` (0.5 B, rounded
+up), `bytes` (1 B). Declared tensors must exactly cover the payload; otherwise the
+payload is stored as one anonymous tensor and per-tensor streaming is unavailable.
 
 ## Quantization
 
-Supported target labels: FP32, FP16, INT8 and INT4. Actual quality/size/runtime results must be measured per model and device. EXM does not claim a fixed compression ratio.
+Supported target labels: FP32, FP16, INT8 and INT4. Actual quality/size/runtime results must be measured per model and device. EXM does not claim a fixed compression ratio — use the benchmark harness (`ExmBenchmark`), which measures stored size, ratio, write/header/assemble latency and integrity on real artifacts.
 
 ## Streaming
 
-The runtime should be able to locate and decode only the chunks required by an execution plan. It must not assume that the complete model can fit in RAM.
+The runtime locates and decodes only the chunks required by an execution plan (`ExmChunked.Reader.readTensor`). It never assumes the complete model fits in RAM.
